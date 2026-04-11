@@ -10,6 +10,10 @@ import { ClientList } from './page/clients/List.tsx';
 import { ClientCreate } from './page/clients/Create.tsx';
 import { ClientEdit } from './page/clients/Edit.tsx';
 
+import { ProjectList } from './page/projects/List.tsx';
+import { ProjectCreate } from './page/projects/Create.tsx';
+import { ProjectEdit } from './page/projects/Edit.tsx';
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -35,7 +39,14 @@ export const router = createBrowserRouter([
         ]
       },
       { path: "productions", Component: () => <div>Em Breve: Produções</div> },
-      { path: "projects", Component: () => <div>Em Breve: Projetos</div> },
+      { 
+        path: "projects", 
+        children: [
+          { index: true, Component: ProjectList },
+          { path: "create", Component: ProjectCreate },
+          { path: ":id/edit", Component: ProjectEdit },
+        ]
+      },
     ]
   }
 ]);
