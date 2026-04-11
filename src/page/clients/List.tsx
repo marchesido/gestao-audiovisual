@@ -44,6 +44,7 @@ export const ClientList: React.FC = () => {
     { header: 'E-mail', accessor: 'email' },
     { header: 'Empresa', accessor: 'company' },
     { header: 'Telefone', accessor: 'phone' },
+    { header: 'CPF', accessor: 'cpf' },
     { 
       header: 'Ações', 
       accessor: (row) => (
