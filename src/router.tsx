@@ -6,6 +6,10 @@ import { EquipmentList } from './page/equipments/List.tsx';
 import { EquipmentCreate } from './page/equipments/Create.tsx';
 import { EquipmentEdit } from './page/equipments/Edit.tsx';
 
+import { ClientList } from './page/clients/List.tsx';
+import { ClientCreate } from './page/clients/Create.tsx';
+import { ClientEdit } from './page/clients/Edit.tsx';
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -22,7 +26,14 @@ export const router = createBrowserRouter([
       },
       // Placeholders para futuros módulos
       { path: "projects-equipments", Component: () => <div>Em Breve: Projetos e Equipamentos</div> },
-      { path: "client", Component: () => <div>Em Breve: Clientes</div> },
+      { 
+        path: "client", 
+        children: [
+          { index: true, Component: ClientList },
+          { path: "create", Component: ClientCreate },
+          { path: ":id/edit", Component: ClientEdit },
+        ]
+      },
       { path: "productions", Component: () => <div>Em Breve: Produções</div> },
       { path: "projects", Component: () => <div>Em Breve: Projetos</div> },
     ]
