@@ -18,6 +18,10 @@ import { ProductionList } from './page/productions/List.tsx';
 import { ProductionCreate } from './page/productions/Create.tsx';
 import { ProductionEdit } from './page/productions/Edit.tsx';
 
+import { EquipmentAllocationList } from './page/project-equipments/List.tsx';
+import { EquipmentAllocationCreate } from './page/project-equipments/Create.tsx';
+import { EquipmentAllocationEdit } from './page/project-equipments/Edit.tsx';
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -33,7 +37,14 @@ export const router = createBrowserRouter([
         ]
       },
       // Placeholders para futuros módulos
-      { path: "projects-equipments", Component: () => <div>Em Breve: Projetos e Equipamentos</div> },
+      { 
+        path: "projects-equipments", 
+        children: [
+          { index: true, Component: EquipmentAllocationList },
+          { path: "create", Component: EquipmentAllocationCreate },
+          { path: ":id/edit", Component: EquipmentAllocationEdit },
+        ]
+      },
       { 
         path: "client", 
         children: [
