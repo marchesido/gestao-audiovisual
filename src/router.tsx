@@ -14,6 +14,10 @@ import { ProjectList } from './page/projects/List.tsx';
 import { ProjectCreate } from './page/projects/Create.tsx';
 import { ProjectEdit } from './page/projects/Edit.tsx';
 
+import { ProductionList } from './page/productions/List.tsx';
+import { ProductionCreate } from './page/productions/Create.tsx';
+import { ProductionEdit } from './page/productions/Edit.tsx';
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -38,7 +42,14 @@ export const router = createBrowserRouter([
           { path: ":id/edit", Component: ClientEdit },
         ]
       },
-      { path: "productions", Component: () => <div>Em Breve: Produções</div> },
+      { 
+        path: "productions", 
+        children: [
+          { index: true, Component: ProductionList },
+          { path: "create", Component: ProductionCreate },
+          { path: ":id/edit", Component: ProductionEdit },
+        ]
+      },
       { 
         path: "projects", 
         children: [
