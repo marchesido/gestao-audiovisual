@@ -18,7 +18,7 @@ export const EquipmentForm: React.FC<EquipmentFormProps> = ({ initialData, onSub
     dailyCost: initialData?.dailyCost || 0,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ 
       ...prev, 
