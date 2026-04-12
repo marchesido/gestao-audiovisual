@@ -4,14 +4,16 @@ import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import { getProjects } from '../../services/projectService';
 import type { Project } from '../../types/project';
+import { ProductionEquipmentsSection } from './ProductionEquipmentsSection';
 
 interface ProductionFormProps {
   initialData?: Partial<CreateProductionData>;
   onSubmit: (data: CreateProductionData) => Promise<void>;
   isLoading?: boolean;
+  productionId?: string;
 }
 
-export const ProductionForm: React.FC<ProductionFormProps> = ({ initialData, onSubmit, isLoading }) => {
+export const ProductionForm: React.FC<ProductionFormProps> = ({ initialData, onSubmit, isLoading, productionId }) => {
   const [formData, setFormData] = useState<Partial<CreateProductionData>>({
     type: initialData?.type || '',
     cost: initialData?.cost || 0,
@@ -131,6 +133,8 @@ export const ProductionForm: React.FC<ProductionFormProps> = ({ initialData, onS
         multiline
         placeholder="Detalhes de campo, imprevistos ou logs diários..."
       />
+
+      {productionId && <ProductionEquipmentsSection productionId={productionId} />}
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
         <Button type="submit" isLoading={isLoading}>

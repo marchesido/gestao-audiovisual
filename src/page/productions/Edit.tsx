@@ -61,7 +61,7 @@ export const ProductionEdit: React.FC = () => {
         </div>
       </div>
 
-      <ProductionForm initialData={initialData} onSubmit={handleSubmit} isLoading={isSubmitting} />
+      <ProductionForm initialData={initialData} onSubmit={handleSubmit} isLoading={isSubmitting} productionId={id} />
     </div>
   );
 };

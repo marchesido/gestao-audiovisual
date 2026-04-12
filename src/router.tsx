@@ -18,9 +18,9 @@ import { ProductionList } from './page/productions/List.tsx';
 import { ProductionCreate } from './page/productions/Create.tsx';
 import { ProductionEdit } from './page/productions/Edit.tsx';
 
-import { EquipmentAllocationList } from './page/project-equipments/List.tsx';
-import { EquipmentAllocationCreate } from './page/project-equipments/Create.tsx';
-import { EquipmentAllocationEdit } from './page/project-equipments/Edit.tsx';
+import { EquipmentAllocationList } from './page/production-equipments/List.tsx';
+import { EquipmentAllocationCreate } from './page/production-equipments/Create.tsx';
+import { EquipmentAllocationEdit } from './page/production-equipments/Edit.tsx';
 
 export const router = createBrowserRouter([
   {
@@ -28,8 +28,8 @@ export const router = createBrowserRouter([
     Component: Layout,
     children: [
       { index: true, Component: App }, // Dashboard Dashboard
-      { 
-        path: "equipments", 
+      {
+        path: "equipments",
         children: [
           { index: true, Component: EquipmentList },
           { path: "create", Component: EquipmentCreate },
@@ -37,32 +37,32 @@ export const router = createBrowserRouter([
         ]
       },
       // Placeholders para futuros módulos
-      { 
-        path: "projects-equipments", 
+      {
+        path: "production-equipments",
         children: [
           { index: true, Component: EquipmentAllocationList },
           { path: "create", Component: EquipmentAllocationCreate },
           { path: ":id/edit", Component: EquipmentAllocationEdit },
         ]
       },
-      { 
-        path: "client", 
+      {
+        path: "client",
         children: [
           { index: true, Component: ClientList },
           { path: "create", Component: ClientCreate },
           { path: ":id/edit", Component: ClientEdit },
         ]
       },
-      { 
-        path: "productions", 
+      {
+        path: "productions",
         children: [
           { index: true, Component: ProductionList },
           { path: "create", Component: ProductionCreate },
           { path: ":id/edit", Component: ProductionEdit },
         ]
       },
-      { 
-        path: "projects", 
+      {
+        path: "projects",
         children: [
           { index: true, Component: ProjectList },
           { path: "create", Component: ProjectCreate },

@@ -1,4 +1,5 @@
 import type { Project } from './project';
+import type { ProductionEquipment } from './production-equipment';
 
 export interface Production {
   id: string;
@@ -9,6 +10,7 @@ export interface Production {
   notes?: string;
   createdAt: string;
   project?: Project;
+  productionEquipments?: ProductionEquipment[];
 }
 
 export type CreateProductionData = {
