@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { getProductionEquipments, createProductionEquipment, deleteProductionEquipment } from '../../services/productionEquipmentService';
 import { getEquipments } from '../../services/equipmentService';
 import type { ProductionEquipment } from '../../types/production-equipment';
 import type { Equipment } from '../../types/equipment';
@@ -8,88 +7,60 @@ import { Input } from '../../components/ui/Input';
 import { Plus, Trash2 } from 'lucide-react';
 
 interface ProductionEquipmentsSectionProps {
-  productionId: string;
+  productionEquipments: Partial<ProductionEquipment>[];
+  onChange: (equipments: Partial<ProductionEquipment>[]) => void;
 }
 
-export const ProductionEquipmentsSection: React.FC<ProductionEquipmentsSectionProps> = ({ productionId }) => {
-  const [productionEquipments, setProductionEquipments] = useState<ProductionEquipment[]>([]);
+export const ProductionEquipmentsSection: React.FC<ProductionEquipmentsSectionProps> = ({ productionEquipments, onChange }) => {
   const [equipments, setEquipments] = useState<Equipment[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   
   const [equipmentId, setEquipmentId] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [usageDate, setUsageDate] = useState('');
   const [customDailyCost, setCustomDailyCost] = useState<number | ''>('');
 
-  const loadData = async () => {
-    try {
-      getProductionEquipments()
-        .then(peRes => {
-          const filtered = peRes.data.filter(pe => pe.productionId === productionId || pe.production?.id === productionId);
-          setProductionEquipments(filtered);
-        })
-        .catch(err => console.error("Error fetching production equipments:", err));
-
-      getEquipments()
-        .then(eqRes => {
-          setEquipments(eqRes.data);
-        })
-        .catch(err => console.error("Error fetching equipments:", err));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   useEffect(() => {
-    loadData();
-  }, [productionId]);
+    getEquipments()
+      .then(eqRes => {
+        setEquipments(eqRes.data);
+      })
+      .catch(err => console.error("Error fetching equipments:", err));
+  }, []);
 
-  const handleAdd = async (e?: React.MouseEvent | React.FormEvent) => {
+  const handleAdd = (e?: React.MouseEvent | React.FormEvent) => {
     if (e) e.preventDefault();
     if (!equipmentId || !usageDate) {
       alert("Equipamento e Data de Uso são obrigatórios.");
       return;
     }
     
-    try {
-      setIsLoading(true);
-      await createProductionEquipment({
-        productionId,
-        equipmentId,
-        quantity,
-        usageDate,
-        customDailyCost: customDailyCost === '' ? undefined : Number(customDailyCost)
-      });
-      setEquipmentId('');
-      setQuantity(1);
-      setUsageDate('');
-      setCustomDailyCost('');
-      await loadData();
-    } catch (err: any) {
-      console.error(err);
-      if (err.response?.data?.message) {
-         alert("Erro: " + err.response.data.message);
-      } else {
-         alert("Erro ao adicionar equipamento à produção.");
-      }
-    } finally {
-      setIsLoading(false);
-    }
+    const equipment = equipments.find(eq => eq.id === equipmentId);
+
+    const newEquipment: Partial<ProductionEquipment> = {
+      equipmentId,
+      equipment,
+      quantity,
+      usageDate,
+      customDailyCost: customDailyCost === '' ? undefined : Number(customDailyCost)
+    };
+
+    onChange([...productionEquipments, newEquipment]);
+
+    setEquipmentId('');
+    setQuantity(1);
+    setUsageDate('');
+    setCustomDailyCost('');
   };
 
-  const handleRemove = async (id: string) => {
+  const handleRemove = (index: number) => {
     if (!window.confirm("Deseja realmente remover este equipamento da produção?")) return;
-    try {
-      await deleteProductionEquipment(id);
-      await loadData();
-    } catch (err) {
-      console.error(err);
-      alert("Erro ao remover o equipamento.");
-    }
+    const newEquipments = [...productionEquipments];
+    newEquipments.splice(index, 1);
+    onChange(newEquipments);
   };
 
   return (
-    <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', backgroundColor: 'var(--surface-color)', padding: '2rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', maxWidth: '800px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', backgroundColor: 'var(--surface-color)', padding: '2rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', maxWidth: '800px' }}>
       <h2 style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0 }}>Equipamentos da Produção</h2>
       
       {/* List */}
@@ -97,11 +68,10 @@ export const ProductionEquipmentsSection: React.FC<ProductionEquipmentsSectionPr
         {productionEquipments.length === 0 ? (
           <p style={{ color: 'var(--text-muted)' }}>Nenhum equipamento vinculado a esta produção ainda.</p>
         ) : (
-          productionEquipments.map(pe => {
-            // Check usageDate mapping just in case backend returns string without time
-            const dateStr = pe.usageDate.includes('T') ? pe.usageDate : pe.usageDate + 'T00:00:00';
+          productionEquipments.map((pe, index) => {
+            const dateStr = pe.usageDate?.includes('T') ? pe.usageDate : `${pe.usageDate}T00:00:00`;
             return (
-              <div key={pe.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', backgroundColor: 'rgba(15, 23, 42, 0.3)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+              <div key={index} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', backgroundColor: 'rgba(15, 23, 42, 0.3)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
                 <div>
                   <p style={{ margin: 0, fontWeight: 500 }}>{pe.equipment?.name || 'Equipamento ID: ' + pe.equipmentId}</p>
                   <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-muted)' }}>
@@ -109,7 +79,7 @@ export const ProductionEquipmentsSection: React.FC<ProductionEquipmentsSectionPr
                     {pe.customDailyCost ? ` | Custo de Diária: R$ ${Number(pe.customDailyCost).toFixed(2)}` : ''}
                   </p>
                 </div>
-                <Button variant="danger" type="button" onClick={() => handleRemove(pe.id)} style={{ padding: '0.5rem', borderRadius: '8px' }}>
+                <Button variant="danger" type="button" onClick={() => handleRemove(index)} style={{ padding: '0.5rem', borderRadius: '8px' }}>
                   <Trash2 size={16} />
                 </Button>
               </div>
@@ -127,7 +97,6 @@ export const ProductionEquipmentsSection: React.FC<ProductionEquipmentsSectionPr
             <select 
               value={equipmentId} 
               onChange={e => setEquipmentId(e.target.value)}
-              required
               style={{
                  padding: '0.75rem 1rem',
                  borderRadius: 'var(--radius-md)',
@@ -152,7 +121,6 @@ export const ProductionEquipmentsSection: React.FC<ProductionEquipmentsSectionPr
               label="Qtd *"
               type="number"
               min="1"
-              required
               value={quantity}
               onChange={e => setQuantity(Number(e.target.value))}
             />
@@ -162,8 +130,7 @@ export const ProductionEquipmentsSection: React.FC<ProductionEquipmentsSectionPr
             <Input 
               label="Data de Uso *"
               type="date"
-              required
-              value={usageDate}
+              value={usageDate as string}
               onChange={e => setUsageDate(e.target.value)}
             />
           </div>
@@ -179,7 +146,7 @@ export const ProductionEquipmentsSection: React.FC<ProductionEquipmentsSectionPr
             />
           </div>
 
-          <Button type="button" onClick={handleAdd} isLoading={isLoading} style={{ padding: '0.75rem 1.5rem', whiteSpace: 'nowrap' }}>
+          <Button type="button" onClick={handleAdd} style={{ padding: '0.75rem 1.5rem', whiteSpace: 'nowrap' }}>
             <Plus size={20} /> Adicionar
           </Button>
         </div>

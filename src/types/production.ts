@@ -20,4 +20,5 @@ export type CreateProductionData = {
   endDate?: string;
   notes?: string;
   projectId: string; // Assumindo relação
+  productionEquipments?: Partial<ProductionEquipment>[];
 };
