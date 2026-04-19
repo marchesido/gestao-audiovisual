@@ -15,14 +15,14 @@ export const EquipmentForm: React.FC<EquipmentFormProps> = ({ initialData, onSub
     category: initialData?.category || '',
     serialNumber: initialData?.serialNumber || '',
     status: initialData?.status || 'available',
-    dailyCost: initialData?.dailyCost || 0,
+    dailyCost: initialData?.dailyCost !== undefined ? Number(initialData.dailyCost) : 0,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ 
       ...prev, 
-      [name]: name === 'dailyCost' ? parseFloat(value) : value 
+      [name]: name === 'dailyCost' ? (value === '' ? 0 : parseFloat(value)) : value 
     }));
   };
 
