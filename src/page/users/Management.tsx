@@ -37,6 +37,14 @@ export const UsersManagement: React.FC = () => {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // - Validação de e-mail (regex)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert('Por favor, insira um endereço de e-mail válido.');
+      return;
+    }
+
     if (password !== confirmPassword) {
       alert('As senhas não coincidem!');
       return;
