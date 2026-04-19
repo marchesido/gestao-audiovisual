@@ -57,26 +57,24 @@ export const ProjectEquipmentForm: React.FC<FormProps> = ({ initialData, onSubmi
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', backgroundColor: 'var(--surface-color)', padding: '2rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', maxWidth: '600px' }}>
       
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', width: '100%' }}>
-          <label style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-muted)' }}>Projeto Vinculado *</label>
-          <select name="projectId" value={formData.projectId} onChange={handleChange} required
-            style={{ padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', backgroundColor: 'rgba(15, 23, 42, 0.5)', color: 'var(--text-main)', outline: 'none', fontFamily: 'inherit', fontSize: '1rem', appearance: 'auto' }}
-          >
-            <option value="" disabled>Selecione</option>
-            {projects.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}
-          </select>
-        </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', width: '100%' }}>
+        <label style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-muted)' }}>Projeto Vinculado *</label>
+        <select name="projectId" value={formData.projectId} onChange={handleChange} required
+          style={{ padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', backgroundColor: 'rgba(15, 23, 42, 0.5)', color: 'var(--text-main)', outline: 'none', fontFamily: 'inherit', fontSize: '1rem', appearance: 'auto' }}
+        >
+          <option value="" disabled>Selecione</option>
+          {projects.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}
+        </select>
+      </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', width: '100%' }}>
-          <label style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-muted)' }}>Equipamento *</label>
-          <select name="equipmentId" value={formData.equipmentId} onChange={handleChange} required
-             style={{ padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', backgroundColor: 'rgba(15, 23, 42, 0.5)', color: 'var(--text-main)', outline: 'none', fontFamily: 'inherit', fontSize: '1rem', appearance: 'auto' }}
-          >
-            <option value="" disabled>Selecione</option>
-            {equipments.map(e => <option key={e.id} value={e.id}>{e.name} (SN: {e.serialNumber || 'N/A'})</option>)}
-          </select>
-        </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', width: '100%' }}>
+        <label style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-muted)' }}>Equipamento *</label>
+        <select name="equipmentId" value={formData.equipmentId} onChange={handleChange} required
+           style={{ padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', backgroundColor: 'rgba(15, 23, 42, 0.5)', color: 'var(--text-main)', outline: 'none', fontFamily: 'inherit', fontSize: '1rem', textOverflow: 'ellipsis' }}
+        >
+          <option value="" disabled>Selecione</option>
+          {equipments.map(e => <option key={e.id} value={e.id}>{e.name} (SN: {e.serialNumber || 'N/A'})</option>)}
+        </select>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>

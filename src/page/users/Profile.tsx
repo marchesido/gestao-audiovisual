@@ -8,7 +8,9 @@ import { useNavigate } from 'react-router';
 export const Profile: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [name, setName] = useState('');
+  const [cpf, setCpf] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -21,6 +23,7 @@ export const Profile: React.FC = () => {
       const data = await getProfile();
       setUser(data);
       setName(data.name || '');
+      setCpf(data.cpf || '');
     } catch (err) {
       console.error(err);
       if ((err as any).response?.status === 401) {
@@ -34,14 +37,28 @@ export const Profile: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
 
+    if (password && password !== confirmPassword) {
+      alert('A nova senha e a confirmação não conferem.');
+      setIsLoading(false);
+      return;
+    }
+
     if (password && (password.length < 8 || !/[A-Z]/.test(password) || !/[\W_]/.test(password))) {
       alert('A nova senha deve ter no mínimo 8 dígitos, conter 1 letra maiúscula e 1 caractere especial.');
       setIsLoading(false);
       return;
     }
 
+    // CPF Validation
+    const cpfRegex = /^\d{3}\.\d{3}\.\d{3}\-\d{2}$|^\d{11}$/;
+    if (!cpfRegex.test(cpf)) {
+        alert('CPF inválido.');
+        setIsLoading(false);
+        return;
+    }
+
     try {
-      const payload: any = { name };
+      const payload: any = { name, cpf };
       if (password) payload.password = password;
       await updateUser(user.id, payload);
       alert('Perfil atualizado com sucesso!');
@@ -80,6 +97,14 @@ export const Profile: React.FC = () => {
           required
         />
 
+        <Input 
+          label="CPF"
+          value={cpf}
+          onChange={e => setCpf(e.target.value)}
+          required
+          placeholder="000.000.000-00"
+        />
+
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
           <label style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-muted)' }}>E-mail (Não editável)</label>
           <input 
@@ -104,6 +129,13 @@ export const Profile: React.FC = () => {
           placeholder="Deixe em branco para não alterar"
           minLength={8}
           title="A senha deve ter no mínimo 8 dígitos, conter 1 letra maiúscula e 1 caractere especial."
+        />
+        <Input 
+          label="Confirmar Nova Senha"
+          type="password"
+          value={confirmPassword}
+          onChange={e => setConfirmPassword(e.target.value)}
+          placeholder="Confirme a nova senha"
         />
         <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '-0.5rem' }}>
           Requisitos da nova senha:
