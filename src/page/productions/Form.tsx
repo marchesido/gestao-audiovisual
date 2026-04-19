@@ -15,7 +15,7 @@ interface ProductionFormProps {
 export const ProductionForm: React.FC<ProductionFormProps> = ({ initialData, onSubmit, isLoading }) => {
   const [formData, setFormData] = useState<Partial<CreateProductionData>>({
     type: initialData?.type || '',
-    cost: initialData?.cost || 0,
+    cost: initialData?.cost !== undefined ? Number(initialData.cost) : 0,
     startDate: initialData?.startDate ? new Date(initialData.startDate).toISOString().split('T')[0] : '',
     endDate: initialData?.endDate ? new Date(initialData.endDate).toISOString().split('T')[0] : '',
     notes: initialData?.notes || '',
@@ -33,7 +33,7 @@ export const ProductionForm: React.FC<ProductionFormProps> = ({ initialData, onS
     const { name, value } = e.target;
     setFormData(prev => ({ 
       ...prev, 
-      [name]: name === 'cost' ? parseFloat(value) : value 
+      [name]: name === 'cost' ? (value === '' ? 0 : parseFloat(value)) : value 
     }));
   };
 
@@ -167,6 +167,7 @@ export const ProductionForm: React.FC<ProductionFormProps> = ({ initialData, onS
       <ProductionEquipmentsSection 
         productionEquipments={formData.productionEquipments || []} 
         onChange={handleEquipmentsChange} 
+        productionId={(initialData as any)?.id}
       />
 
       <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '1rem' }}>
