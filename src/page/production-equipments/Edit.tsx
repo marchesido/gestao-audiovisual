@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { ProductionEquipmentForm } from './Form';
 import type { CreateProductionEquipmentData } from '../../types/production-equipment';
 import { ArrowLeft } from 'lucide-react';
 import { getProductionEquipmentById, updateProductionEquipment } from '../../services/productionEquipmentService';
+import { ProductionEquipmentForm } from './Form';
 
 export const EquipmentAllocationEdit: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);

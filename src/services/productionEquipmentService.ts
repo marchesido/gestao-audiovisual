@@ -7,3 +7,7 @@ export const createProductionEquipment = (data: CreateProductionEquipmentData) =
 export const updateProductionEquipment = (id: string, data: Partial<CreateProductionEquipmentData>) =>
   api.patch<ProductionEquipment>(`/production-equipments/${id}`, data);
 export const deleteProductionEquipment = (id: string) => api.delete(`/production-equipments/${id}`);
+export const checkEquipmentAvailability = (equipmentId: string, usageDate: string, excludeProductionId?: string) => {
+  const params = excludeProductionId ? { excludeProductionId } : undefined;
+  return api.get<{available: boolean}>(`/production-equipments/check-availability/${equipmentId}/${usageDate}`, { params });
+};

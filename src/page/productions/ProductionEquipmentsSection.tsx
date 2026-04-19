@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getEquipments } from '../../services/equipmentService';
 import type { ProductionEquipment } from '../../types/production-equipment';
 import type { Equipment } from '../../types/equipment';
+import { checkEquipmentAvailability } from '../../services/productionEquipmentService';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Plus, Trash2 } from 'lucide-react';
@@ -9,9 +10,10 @@ import { Plus, Trash2 } from 'lucide-react';
 interface ProductionEquipmentsSectionProps {
   productionEquipments: Partial<ProductionEquipment>[];
   onChange: (equipments: Partial<ProductionEquipment>[]) => void;
+  productionId?: string;
 }
 
-export const ProductionEquipmentsSection: React.FC<ProductionEquipmentsSectionProps> = ({ productionEquipments, onChange }) => {
+export const ProductionEquipmentsSection: React.FC<ProductionEquipmentsSectionProps> = ({ productionEquipments, onChange, productionId }) => {
   const [equipments, setEquipments] = useState<Equipment[]>([]);
   
   const [equipmentId, setEquipmentId] = useState('');
@@ -27,10 +29,30 @@ export const ProductionEquipmentsSection: React.FC<ProductionEquipmentsSectionPr
       .catch(err => console.error("Error fetching equipments:", err));
   }, []);
 
-  const handleAdd = (e?: React.MouseEvent | React.FormEvent) => {
+  const handleAdd = async (e?: React.MouseEvent | React.FormEvent) => {
     if (e) e.preventDefault();
     if (!equipmentId || !usageDate) {
       alert("Equipamento e Data de Uso são obrigatórios.");
+      return;
+    }
+
+    const isConflictLocally = productionEquipments.some(
+      pe => pe.equipmentId === equipmentId && pe.usageDate === usageDate
+    );
+    if (isConflictLocally) {
+      alert("Este equipamento já está adicionado nesta mesma data para esta produção.");
+      return;
+    }
+
+    try {
+      const response = await checkEquipmentAvailability(equipmentId, usageDate, productionId);
+      if (!response.data.available) {
+        alert("Já existe uma reserva deste mesmo equipamento para esta mesma data em outra produção.");
+        return;
+      }
+    } catch (err) {
+      console.error("Error checking availability:", err);
+      alert("Não foi possível verificar a disponibilidade do equipamento.");
       return;
     }
     
