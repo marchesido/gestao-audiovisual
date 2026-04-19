@@ -1,13 +1,12 @@
 import React from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router';
 import { LayoutDashboard, Users, Video, Camera, BoxSelect, UserCircle, LogOut } from 'lucide-react';
-import { logout } from '../../services/authService';
+import { useAuth } from '../../contexts/AuthContext';
 
 export const Layout: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const userStr = localStorage.getItem('user');
-  const user = userStr ? JSON.parse(userStr) : null;
+  const { user, logout } = useAuth();
 
   const navItems = [
     { path: '/', label: 'Dashboard', icon: LayoutDashboard },
