@@ -3,7 +3,10 @@ import './index.css'
 import { router } from './router'
 import { createRoot } from 'react-dom/client'
 
-createRoot(document.getElementById('root')!).render(
-  <RouterProvider router={router}/>
+import { AuthProvider } from './contexts/AuthContext';
 
+createRoot(document.getElementById('root')!).render(
+  <AuthProvider>
+    <RouterProvider router={router} />
+  </AuthProvider>
 )
