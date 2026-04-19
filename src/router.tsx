@@ -5,7 +5,9 @@ import App from './App.tsx';
 
 import { Login } from './page/auth/Login.tsx';
 import { Profile } from './page/users/Profile.tsx';
-import { UsersManagement } from './page/users/Management.tsx';
+import { UserList } from './page/users/List.tsx';
+import { UserCreate } from './page/users/Create.tsx';
+import { UserEdit } from './page/users/Edit.tsx';
 
 import { EquipmentList } from './page/equipments/List.tsx';
 import { EquipmentCreate } from './page/equipments/Create.tsx';
@@ -47,7 +49,11 @@ export const router = createBrowserRouter([
           },
           {
             path: "users",
-            Component: UsersManagement,
+            children: [
+              { index: true, Component: UserList },
+              { path: "new", Component: UserCreate },
+              { path: ":id/edit", Component: UserEdit },
+            ]
           },
           {
             path: "equipments",
