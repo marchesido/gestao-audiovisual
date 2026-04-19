@@ -1,9 +1,13 @@
 import React from 'react';
-import { Outlet, Link, useLocation } from 'react-router';
-import { LayoutDashboard, Users, Video, Camera, BoxSelect } from 'lucide-react';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router';
+import { LayoutDashboard, Users, Video, Camera, BoxSelect, UserCircle, LogOut } from 'lucide-react';
+import { logout } from '../../services/authService';
 
 export const Layout: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const userStr = localStorage.getItem('user');
+  const user = userStr ? JSON.parse(userStr) : null;
 
   const navItems = [
     { path: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -11,7 +15,17 @@ export const Layout: React.FC = () => {
     { path: '/projects', label: 'Projetos', icon: BoxSelect },
     { path: '/client', label: 'Clientes', icon: Users },
     { path: '/productions', label: 'Produções', icon: Video },
+    { path: '/production-equipments', label: 'Alocações', icon: Camera },
   ];
+
+  if (user?.role === 'ADMIN') {
+    navItems.push({ path: '/users', label: 'Usuários', icon: Users });
+  }
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: 'var(--bg-color)' }}>
@@ -77,12 +91,38 @@ export const Layout: React.FC = () => {
           backgroundColor: 'rgba(15, 23, 42, 0.8)',
           display: 'flex',
           alignItems: 'center',
+          justifyContent: 'space-between',
           padding: '0 2rem',
           position: 'sticky',
           top: 0,
           zIndex: 10
         }}>
           <h2 style={{ fontSize: '1.1rem', fontWeight: 500, color: 'var(--text-main)' }}>Gestão Audiovisual</h2>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <Link to="/profile" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', fontWeight: 500 }}>
+              <UserCircle size={20} />
+              <span>{user?.name || 'Perfil'}</span>
+            </Link>
+            
+            <button 
+              onClick={handleLogout}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.5rem 1rem',
+                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                color: '#ef4444',
+                border: 'none',
+                borderRadius: 'var(--radius-md)',
+                cursor: 'pointer',
+                fontWeight: 600
+              }}
+            >
+              <LogOut size={18} /> Sair
+            </button>
+          </div>
         </header>
 
         <div style={{ flex: 1, overflowY: 'auto', padding: '2rem' }}>

@@ -1,6 +1,11 @@
 import { createBrowserRouter } from "react-router";
 import { Layout } from './components/shared/Layout.tsx';
+import { ProtectedRoute } from './components/shared/ProtectedRoute.tsx';
 import App from './App.tsx';
+
+import { Login } from './page/auth/Login.tsx';
+import { Profile } from './page/users/Profile.tsx';
+import { UsersManagement } from './page/users/Management.tsx';
 
 import { EquipmentList } from './page/equipments/List.tsx';
 import { EquipmentCreate } from './page/equipments/Create.tsx';
@@ -24,51 +29,68 @@ import { EquipmentAllocationEdit } from './page/production-equipments/Edit.tsx';
 
 export const router = createBrowserRouter([
   {
+    path: "/login",
+    Component: Login,
+  },
+  {
     path: "/",
-    Component: Layout,
+    Component: ProtectedRoute,
     children: [
-      { index: true, Component: App }, // Dashboard Dashboard
       {
-        path: "equipments",
+        path: "",
+        Component: Layout,
         children: [
-          { index: true, Component: EquipmentList },
-          { path: "create", Component: EquipmentCreate },
-          { path: ":id/edit", Component: EquipmentEdit },
+          { index: true, Component: App }, // Dashboard
+          {
+            path: "profile",
+            Component: Profile,
+          },
+          {
+            path: "users",
+            Component: UsersManagement,
+          },
+          {
+            path: "equipments",
+            children: [
+              { index: true, Component: EquipmentList },
+              { path: "create", Component: EquipmentCreate },
+              { path: ":id/edit", Component: EquipmentEdit },
+            ]
+          },
+          {
+            path: "production-equipments",
+            children: [
+              { index: true, Component: EquipmentAllocationList },
+              { path: "create", Component: EquipmentAllocationCreate },
+              { path: ":id/edit", Component: EquipmentAllocationEdit },
+            ]
+          },
+          {
+            path: "client",
+            children: [
+              { index: true, Component: ClientList },
+              { path: "create", Component: ClientCreate },
+              { path: ":id/edit", Component: ClientEdit },
+            ]
+          },
+          {
+            path: "productions",
+            children: [
+              { index: true, Component: ProductionList },
+              { path: "create", Component: ProductionCreate },
+              { path: ":id/edit", Component: ProductionEdit },
+            ]
+          },
+          {
+            path: "projects",
+            children: [
+              { index: true, Component: ProjectList },
+              { path: "create", Component: ProjectCreate },
+              { path: ":id/edit", Component: ProjectEdit },
+            ]
+          },
         ]
-      },
-      // Placeholders para futuros módulos
-      {
-        path: "production-equipments",
-        children: [
-          { index: true, Component: EquipmentAllocationList },
-          { path: "create", Component: EquipmentAllocationCreate },
-          { path: ":id/edit", Component: EquipmentAllocationEdit },
-        ]
-      },
-      {
-        path: "client",
-        children: [
-          { index: true, Component: ClientList },
-          { path: "create", Component: ClientCreate },
-          { path: ":id/edit", Component: ClientEdit },
-        ]
-      },
-      {
-        path: "productions",
-        children: [
-          { index: true, Component: ProductionList },
-          { path: "create", Component: ProductionCreate },
-          { path: ":id/edit", Component: ProductionEdit },
-        ]
-      },
-      {
-        path: "projects",
-        children: [
-          { index: true, Component: ProjectList },
-          { path: "create", Component: ProjectCreate },
-          { path: ":id/edit", Component: ProjectEdit },
-        ]
-      },
+      }
     ]
   }
 ]);
