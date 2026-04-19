@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { getUsers, createUser } from '../../services/userService';
+import { getUsers, createUser, updateUser } from '../../services/userService';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
-import { Plus } from 'lucide-react';
+import { Plus, Pencil, X } from 'lucide-react';
 
 export const UsersManagement: React.FC = () => {
   const [users, setUsers] = useState<any[]>([]);
+  const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState('USER');
   const [isLoading, setIsLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -33,23 +35,51 @@ export const UsersManagement: React.FC = () => {
     }
   };
 
-  const handleCreate = async (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      alert('As senhas não coincidem!');
+      return;
+    }
+    
     setIsLoading(true);
     try {
-      await createUser({ name, email, password, role });
-      alert('Usuário criado com sucesso!');
-      setName('');
-      setEmail('');
-      setPassword('');
-      setRole('USER');
+      if (editingUserId) {
+        const payload: any = { name, email, role };
+        if (password) payload.password = password;
+        await updateUser(editingUserId, payload);
+        alert('Usuário atualizado com sucesso!');
+        resetForm();
+      } else {
+        await createUser({ name, email, password, role });
+        alert('Usuário criado com sucesso!');
+        resetForm();
+      }
       loadUsers();
     } catch (err: any) {
       console.error(err);
-      alert(err.response?.data?.message || 'Erro ao criar usuário.');
+      alert(err.response?.data?.message || 'Erro ao salvar usuário.');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const resetForm = () => {
+    setEditingUserId(null);
+    setName('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setRole('USER');
+  };
+
+  const handleEditClick = (user: any) => {
+    setEditingUserId(user.id);
+    setName(user.name);
+    setEmail(user.email);
+    setRole(user.role);
+    setPassword('');
+    setConfirmPassword('');
   };
 
   if (!isAdmin) {
@@ -70,7 +100,7 @@ export const UsersManagement: React.FC = () => {
         flexWrap: 'wrap'
       }}>
         {/* Formulário de Criação */}
-        <form onSubmit={handleCreate} style={{
+        <form onSubmit={handleSave} style={{
           display: 'flex', 
           flexDirection: 'column', 
           gap: '1.5rem',
@@ -81,7 +111,16 @@ export const UsersManagement: React.FC = () => {
           flex: '1 1 300px',
           maxWidth: '500px'
         }}>
-          <h2 style={{ fontSize: '1.25rem', margin: 0 }}>Novo Usuário</h2>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h2 style={{ fontSize: '1.25rem', margin: 0 }}>
+              {editingUserId ? 'Editar Usuário' : 'Novo Usuário'}
+            </h2>
+            {editingUserId && (
+              <Button type="button" variant="danger" onClick={resetForm} style={{ padding: '0.5rem' }}>
+                <X size={16} />
+              </Button>
+            )}
+          </div>
 
           <Input 
             label="Nome"
@@ -99,11 +138,20 @@ export const UsersManagement: React.FC = () => {
           />
 
           <Input 
-            label="Senha Inicial"
+            label={editingUserId ? "Nova Senha (opcional)" : "Senha Inicial"}
             type="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
-            required
+            required={!editingUserId}
+            minLength={6}
+          />
+
+          <Input 
+            label="Confirmação de Senha"
+            type="password"
+            value={confirmPassword}
+            onChange={e => setConfirmPassword(e.target.value)}
+            required={!editingUserId || password.length > 0}
             minLength={6}
           />
 
@@ -127,7 +175,8 @@ export const UsersManagement: React.FC = () => {
           </div>
 
           <Button type="submit" isLoading={isLoading} style={{ marginTop: '0.5rem' }}>
-            <Plus size={20} /> Criar Usuário
+            {editingUserId ? <Pencil size={20} /> : <Plus size={20} />} 
+            {editingUserId ? 'Salvar Alterações' : 'Criar Usuário'}
           </Button>
         </form>
 
@@ -159,16 +208,31 @@ export const UsersManagement: React.FC = () => {
                     <h3 style={{ margin: '0 0 0.25rem 0', fontSize: '1rem' }}>{u.name}</h3>
                     <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.875rem' }}>{u.email}</p>
                   </div>
-                  <span style={{ 
-                    padding: '0.25rem 0.75rem', 
-                    borderRadius: '999px', 
-                    fontSize: '0.75rem', 
-                    fontWeight: 600,
-                    backgroundColor: u.role === 'ADMIN' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(100, 116, 139, 0.2)',
-                    color: u.role === 'ADMIN' ? '#60a5fa' : '#94a3b8'
-                  }}>
-                    {u.role}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <span style={{ 
+                      padding: '0.25rem 0.75rem', 
+                      borderRadius: '999px', 
+                      fontSize: '0.75rem', 
+                      fontWeight: 600,
+                      backgroundColor: u.role === 'ADMIN' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(100, 116, 139, 0.2)',
+                      color: u.role === 'ADMIN' ? '#60a5fa' : '#94a3b8'
+                    }}>
+                      {u.role}
+                    </span>
+                    <button 
+                      onClick={() => handleEditClick(u)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: 'var(--primary-color)',
+                        cursor: 'pointer',
+                        padding: '0.25rem'
+                      }}
+                      title="Editar Usuário"
+                    >
+                      <Pencil size={18} />
+                    </button>
+                  </div>
                 </div>
               ))
             )}
