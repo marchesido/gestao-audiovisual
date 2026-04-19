@@ -9,6 +9,7 @@ export const UsersManagement: React.FC = () => {
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [cpf, setCpf] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState('USER');
@@ -45,6 +46,22 @@ export const UsersManagement: React.FC = () => {
       return;
     }
 
+    const validateCPF = (cpfStr: string) => {
+      const cleanCpf = cpfStr.replace(/[^\d]+/g, '');
+      if (cleanCpf.length !== 11 || !!cleanCpf.match(/(\d)\1{10}/)) return false;
+      let v1 = 0, v2 = 0;
+      for (let i = 0; i < 9; i++) v1 += parseInt(cleanCpf[i]) * (10 - i);
+      v1 = ((v1 * 10) % 11) % 10;
+      for (let i = 0; i < 10; i++) v2 += parseInt(cleanCpf[i]) * (11 - i);
+      v2 = ((v2 * 10) % 11) % 10;
+      return v1 === parseInt(cleanCpf[9]) && v2 === parseInt(cleanCpf[10]);
+    };
+
+    if (!validateCPF(cpf)) {
+      alert('Por favor, insira um CPF válido.');
+      return;
+    }
+
     if (password !== confirmPassword) {
       alert('As senhas não coincidem!');
       return;
@@ -58,13 +75,13 @@ export const UsersManagement: React.FC = () => {
     setIsLoading(true);
     try {
       if (editingUserId) {
-        const payload: any = { name, email, role };
+        const payload: any = { name, email, cpf, role };
         if (password) payload.password = password;
         await updateUser(editingUserId, payload);
         alert('Usuário atualizado com sucesso!');
         resetForm();
       } else {
-        await createUser({ name, email, password, role });
+        await createUser({ name, email, cpf, password, role });
         alert('Usuário criado com sucesso!');
         resetForm();
       }
@@ -81,6 +98,7 @@ export const UsersManagement: React.FC = () => {
     setEditingUserId(null);
     setName('');
     setEmail('');
+    setCpf('');
     setPassword('');
     setConfirmPassword('');
     setRole('USER');
@@ -90,6 +108,7 @@ export const UsersManagement: React.FC = () => {
     setEditingUserId(user.id);
     setName(user.name);
     setEmail(user.email);
+    setCpf(user.cpf || '');
     setRole(user.role);
     setPassword('');
     setConfirmPassword('');
@@ -148,6 +167,21 @@ export const UsersManagement: React.FC = () => {
             value={email}
             onChange={e => setEmail(e.target.value)}
             required
+          />
+
+          <Input 
+            label="CPF"
+            value={cpf}
+            onChange={(e) => {
+              let v = e.target.value.replace(/\D/g, '');
+              if (v.length > 11) v = v.substring(0, 11);
+              v = v.replace(/(\d{3})(\d)/, '$1.$2');
+              v = v.replace(/(\d{3})(\d)/, '$1.$2');
+              v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+              setCpf(v);
+            }}
+            required
+            placeholder="000.000.000-00"
           />
 
           <Input 
@@ -229,6 +263,7 @@ export const UsersManagement: React.FC = () => {
                   <div>
                     <h3 style={{ margin: '0 0 0.25rem 0', fontSize: '1rem' }}>{u.name}</h3>
                     <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.875rem' }}>{u.email}</p>
+                    {u.cpf && <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.875rem' }}>CPF: {u.cpf}</p>}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <span style={{ 
