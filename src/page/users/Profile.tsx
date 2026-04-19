@@ -33,6 +33,13 @@ export const Profile: React.FC = () => {
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+
+    if (password && (password.length < 8 || !/[A-Z]/.test(password) || !/[\W_]/.test(password))) {
+      alert('A nova senha deve ter no mínimo 8 dígitos, conter 1 letra maiúscula e 1 caractere especial.');
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const payload: any = { name };
       if (password) payload.password = password;
@@ -95,7 +102,17 @@ export const Profile: React.FC = () => {
           value={password}
           onChange={e => setPassword(e.target.value)}
           placeholder="Deixe em branco para não alterar"
+          minLength={8}
+          title="A senha deve ter no mínimo 8 dígitos, conter 1 letra maiúscula e 1 caractere especial."
         />
+        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '-0.5rem' }}>
+          Requisitos da nova senha:
+          <ul style={{ margin: '0.25rem 0 0 1rem', padding: 0 }}>
+            <li>Mínimo de 8 caracteres</li>
+            <li>Pelo menos 1 letra maiúscula</li>
+            <li>Pelo menos 1 caractere especial</li>
+          </ul>
+        </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '1rem' }}>
           <Button type="submit" isLoading={isLoading}>

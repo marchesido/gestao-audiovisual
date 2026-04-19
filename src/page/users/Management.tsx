@@ -38,7 +38,7 @@ export const UsersManagement: React.FC = () => {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // - Validação de e-mail (regex)
+    // E-mail validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       alert('Por favor, insira um endereço de e-mail válido.');
@@ -47,6 +47,11 @@ export const UsersManagement: React.FC = () => {
 
     if (password !== confirmPassword) {
       alert('As senhas não coincidem!');
+      return;
+    }
+
+    if (password && (password.length < 8 || !/[A-Z]/.test(password) || !/[\W_]/.test(password))) {
+      alert('A senha deve ter no mínimo 8 dígitos, conter 1 letra maiúscula e 1 caractere especial.');
       return;
     }
     
@@ -151,7 +156,8 @@ export const UsersManagement: React.FC = () => {
             value={password}
             onChange={e => setPassword(e.target.value)}
             required={!editingUserId}
-            minLength={6}
+            minLength={8}
+            title="A senha deve ter no mínimo 8 dígitos, conter 1 letra maiúscula e 1 caractere especial."
           />
 
           <Input 
@@ -160,8 +166,16 @@ export const UsersManagement: React.FC = () => {
             value={confirmPassword}
             onChange={e => setConfirmPassword(e.target.value)}
             required={!editingUserId || password.length > 0}
-            minLength={6}
+            minLength={8}
           />
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '-0.5rem', marginBottom: '0.5rem' }}>
+            Requisitos da senha:
+            <ul style={{ margin: '0.25rem 0 0 1rem', padding: 0 }}>
+              <li>Mínimo de 8 caracteres</li>
+              <li>Pelo menos 1 letra maiúscula</li>
+              <li>Pelo menos 1 caractere especial</li>
+            </ul>
+          </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', width: '100%' }}>
             <label style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-muted)' }}>Perfil</label>
