@@ -1,4 +1,5 @@
-import React, { ButtonHTMLAttributes } from 'react';
+import type { ButtonHTMLAttributes } from "react";
+
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'danger' | 'secondary';
@@ -25,7 +26,7 @@ export const Button: React.FC<ButtonProps> = ({ variant = 'primary', isLoading, 
       case 'danger':
         return { backgroundColor: 'var(--danger-color)', color: '#fff' };
       case 'secondary':
-         return { backgroundColor: 'var(--surface-color)', color: 'var(--text-main)', border: '1px solid var(--border-color)' };
+        return { backgroundColor: 'var(--surface-color)', color: 'var(--text-main)', border: '1px solid var(--border-color)' };
       case 'primary':
       default:
         return { backgroundColor: 'var(--primary-color)', color: '#fff', boxShadow: '0 4px 14px 0 rgba(99, 102, 241, 0.4)' };
@@ -33,19 +34,19 @@ export const Button: React.FC<ButtonProps> = ({ variant = 'primary', isLoading, 
   };
 
   return (
-    <button 
-      style={{ ...baseStyle, ...getVariantStyle(), ...style }} 
+    <button
+      style={{ ...baseStyle, ...getVariantStyle(), ...style }}
       {...props}
       onMouseOver={(e) => {
         if (!props.disabled) {
-            e.currentTarget.style.filter = 'brightness(1.1)';
-            e.currentTarget.style.transform = 'translateY(-1px)';
+          e.currentTarget.style.filter = 'brightness(1.1)';
+          e.currentTarget.style.transform = 'translateY(-1px)';
         }
       }}
       onMouseOut={(e) => {
         if (!props.disabled) {
-            e.currentTarget.style.filter = 'brightness(1)';
-            e.currentTarget.style.transform = 'translateY(0)';
+          e.currentTarget.style.filter = 'brightness(1)';
+          e.currentTarget.style.transform = 'translateY(0)';
         }
       }}
     >
