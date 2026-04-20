@@ -1,4 +1,3 @@
-import React from 'react';
 import { Users, Camera, Video, BoxSelect } from 'lucide-react';
 
 function App() {
@@ -20,9 +19,9 @@ function App() {
         {stats.map((stat, idx) => {
           const Icon = stat.icon;
           return (
-            <div key={idx} style={{ 
-              backgroundColor: 'var(--surface-color)', 
-              padding: '1.5rem', 
+            <div key={idx} style={{
+              backgroundColor: 'var(--surface-color)',
+              padding: '1.5rem',
               borderRadius: 'var(--radius-lg)',
               border: '1px solid var(--border-color)',
               display: 'flex',
@@ -30,8 +29,8 @@ function App() {
               gap: '1rem',
               boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
             }}>
-              <div style={{ 
-                backgroundColor: `${stat.color}20`, 
+              <div style={{
+                backgroundColor: `${stat.color}20`,
                 color: stat.color,
                 padding: '1rem',
                 borderRadius: 'var(--radius-md)',
@@ -47,10 +46,10 @@ function App() {
           );
         })}
       </div>
-      
-      <div style={{ 
-        backgroundColor: 'var(--surface-color)', 
-        padding: '2rem', 
+
+      <div style={{
+        backgroundColor: 'var(--surface-color)',
+        padding: '2rem',
         borderRadius: 'var(--radius-lg)',
         border: '1px solid var(--border-color)'
       }}>
