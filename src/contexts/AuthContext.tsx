@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { login as apiLogin, logout as apiLogout } from '../services/authService';
+import { login as apiLogin, logout as apiLogout, getProfile } from '../services/authService';
 
 interface User {
   id: string;
@@ -19,17 +19,28 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+  const [token, setToken] = useState<string | null>(() => {
+    return localStorage.getItem('access_token');
+  });
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('access_token');
-    const storedUser = localStorage.getItem('user');
-
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
-    }
+    const verifySession = async () => {
+      if (token) {
+        try {
+          const userData = await getProfile();
+          setUser(userData);
+          localStorage.setItem('user', JSON.stringify(userData));
+        } catch (err) {
+          console.error("Sessão inválida ou expirada", err);
+          logout();
+        }
+      }
+    };
+    verifySession();
   }, []);
 
   const login = async (email: string, pass: string) => {
