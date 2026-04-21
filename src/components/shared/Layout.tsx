@@ -29,9 +29,9 @@ export const Layout: React.FC = () => {
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: 'var(--bg-color)' }}>
       {/* Sidebar */}
-      <aside style={{ 
-        width: '260px', 
-        backgroundColor: 'var(--surface-color)', 
+      <aside style={{
+        width: '260px',
+        backgroundColor: 'var(--surface-color)',
         borderRight: '1px solid var(--border-color)',
         display: 'flex',
         flexDirection: 'column'
@@ -41,15 +41,15 @@ export const Layout: React.FC = () => {
             <div style={{ padding: '0.5rem', background: 'var(--primary-color)', borderRadius: 'var(--radius-md)', color: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <Camera size={18} />
             </div>
-            TechAcademy
+            CaseTrack
           </h1>
         </div>
-        
+
         <nav style={{ flex: 1, padding: '1.5rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           {navItems.map((item) => {
             const isActive = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path));
             const Icon = item.icon;
-            
+
             return (
               <Link
                 key={item.path}
@@ -83,9 +83,9 @@ export const Layout: React.FC = () => {
 
       {/* Main Content Area */}
       <main style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        <header style={{ 
-          height: '70px', 
-          borderBottom: '1px solid var(--border-color)', 
+        <header style={{
+          height: '70px',
+          borderBottom: '1px solid var(--border-color)',
           backdropFilter: 'blur(10px)',
           backgroundColor: 'rgba(15, 23, 42, 0.8)',
           display: 'flex',
@@ -97,14 +97,14 @@ export const Layout: React.FC = () => {
           zIndex: 10
         }}>
           <h2 style={{ fontSize: '1.1rem', fontWeight: 500, color: 'var(--text-main)' }}>Gestão Audiovisual</h2>
-          
+
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <Link to="/profile" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', fontWeight: 500 }}>
               <UserCircle size={20} />
               <span>{user?.name || 'Perfil'}</span>
             </Link>
-            
-            <button 
+
+            <button
               onClick={handleLogout}
               style={{
                 display: 'flex',

@@ -44,7 +44,7 @@ export const Login: React.FC = () => {
         boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
       }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', margin: '0 0 0.5rem 0', color: 'var(--text-main)' }}>Gestão Audiovisual</h1>
+          <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', margin: '0 0 0.5rem 0', color: 'var(--text-main)' }}>CaseTrack</h1> <h2>Gestão Audiovisual</h2>
           <p style={{ color: 'var(--text-muted)', margin: 0 }}>Faça login para continuar</p>
         </div>
 
@@ -62,7 +62,7 @@ export const Login: React.FC = () => {
         )}
 
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          <Input 
+          <Input
             label="E-mail"
             type="email"
             value={email}
@@ -70,7 +70,7 @@ export const Login: React.FC = () => {
             required
             placeholder="admin@example.com"
           />
-          <Input 
+          <Input
             label="Senha"
             type="password"
             value={password}
