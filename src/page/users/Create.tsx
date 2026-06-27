@@ -39,7 +39,7 @@ export const UserCreate: React.FC = () => {
       await createUser({ name, email, cpf, password, role });
       alert('Usuário criado com sucesso!');
       navigate('/users');
-    } catch (err: any) {
+    } catch {
       alert('Erro ao criar usuário.');
     } finally {
       setIsLoading(false);

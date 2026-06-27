@@ -37,6 +37,7 @@ export const ProductionForm: React.FC<ProductionFormProps> = ({ initialData, onS
     }));
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleEquipmentsChange = (equipments: any[]) => {
     // Only keep necessary fields to avoid sending full equipment object to backend
     const cleanEquipments = equipments.map(eq => ({
@@ -167,7 +168,7 @@ export const ProductionForm: React.FC<ProductionFormProps> = ({ initialData, onS
       <ProductionEquipmentsSection 
         productionEquipments={formData.productionEquipments || []} 
         onChange={handleEquipmentsChange} 
-        productionId={(initialData as any)?.id}
+        productionId={(initialData as { id?: string })?.id}
       />
 
       <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '1rem' }}>

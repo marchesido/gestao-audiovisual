@@ -1,27 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getUsers } from '../../services/userService';
 import { Button } from '../../components/ui/Button';
 import { Plus, Pencil, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router';
 
+interface UserItem {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
 export const UserList: React.FC = () => {
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<UserItem[]>([]);
   const [skip, setSkip] = useState(0);
   const take = 10;
   const navigate = useNavigate();
 
-  useEffect(() => {
-    loadUsers();
-  }, [skip]);
-
-  const loadUsers = async () => {
+  const loadUsers = useCallback(async () => {
     try {
       const res = await getUsers(skip, take);
       setUsers(res.data);
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [skip, take]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadUsers();
+  }, [loadUsers]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>

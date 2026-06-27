@@ -1,12 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getProfile, logout } from '../../services/authService';
 import { updateUser } from '../../services/userService';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { useNavigate } from 'react-router';
 
+interface ProfileUser {
+  id: string;
+  name?: string;
+  cpf?: string;
+  email: string;
+  role: string;
+}
+
 export const Profile: React.FC = () => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<ProfileUser | null>(null);
   const [name, setName] = useState('');
   const [cpf, setCpf] = useState('');
   const [password, setPassword] = useState('');
@@ -14,24 +22,25 @@ export const Profile: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    loadProfile();
-  }, []);
-
-  const loadProfile = async () => {
+  const loadProfile = useCallback(async () => {
     try {
       const data = await getProfile();
       setUser(data);
       setName(data.name || '');
       setCpf(data.cpf || '');
-    } catch (err) {
+    } catch (err: unknown) {
       console.error(err);
-      if ((err as any).response?.status === 401) {
+      const apiError = err as { response?: { status?: number } };
+      if (apiError.response?.status === 401) {
         logout();
         navigate('/login');
       }
     }
-  };
+  }, [navigate]);
+
+  useEffect(() => {
+    loadProfile();
+  }, [loadProfile]);
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +59,7 @@ export const Profile: React.FC = () => {
     }
 
     // CPF Validation
-    const cpfRegex = /^\d{3}\.\d{3}\.\d{3}\-\d{2}$|^\d{11}$/;
+    const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$|^\d{11}$/;
     if (!cpfRegex.test(cpf)) {
         alert('CPF inválido.');
         setIsLoading(false);
@@ -58,9 +67,9 @@ export const Profile: React.FC = () => {
     }
 
     try {
-      const payload: any = { name, cpf };
+      const payload: Record<string, string> = { name, cpf };
       if (password) payload.password = password;
-      await updateUser(user.id, payload);
+      await updateUser(user!.id, payload);
       alert('Perfil atualizado com sucesso!');
       setPassword('');
     } catch (err) {

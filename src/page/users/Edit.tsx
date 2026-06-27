@@ -18,7 +18,7 @@ export const UserEdit: React.FC = () => {
     // In a real app we'd fetch the specific user or have getProfileById
     // Here we have to fetch all to find by ID
     getUsers().then(res => {
-      const u = res.data.find((user: any) => user.id === id);
+      const u = res.data.find((user: { id: string; name: string; cpf?: string; role: string }) => user.id === id);
       if (u) {
         setName(u.name);
         setCpf(u.cpf || '');
@@ -37,12 +37,12 @@ export const UserEdit: React.FC = () => {
     
     setIsLoading(true);
     try {
-      const payload: any = { name, cpf, role };
+      const payload: Record<string, string> = { name, cpf, role };
       if (password) payload.password = password;
       await updateUser(id!, payload);
       alert('Usuário atualizado!');
       navigate('/users');
-    } catch (err: any) {
+    } catch {
       alert('Erro ao atualizar usuário.');
     } finally {
       setIsLoading(false);

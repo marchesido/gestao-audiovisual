@@ -14,6 +14,7 @@ export const ProjectEdit: React.FC = () => {
   useEffect(() => {
     if (id) {
       getProjectById(id).then(response => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const raw = response.data as any; // Type workaround for relations
         setInitialData({
            ...raw,

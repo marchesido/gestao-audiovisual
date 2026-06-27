@@ -27,6 +27,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return localStorage.getItem('access_token');
   });
 
+  const login = async (email: string, pass: string) => {
+    const data = await apiLogin(email, pass);
+    setToken(data.access_token);
+    setUser(data.user);
+  };
+
+  const logout = () => {
+    apiLogout();
+    setToken(null);
+    setUser(null);
+  };
+
   useEffect(() => {
     const verifySession = async () => {
       if (token) {
@@ -41,19 +53,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
     };
     verifySession();
-  }, []);
-
-  const login = async (email: string, pass: string) => {
-    const data = await apiLogin(email, pass);
-    setToken(data.access_token);
-    setUser(data.user);
-  };
-
-  const logout = () => {
-    apiLogout();
-    setToken(null);
-    setUser(null);
-  };
+  }, [token]);
 
   return (
     <AuthContext.Provider value={{ user, token, login, logout, setUser }}>
@@ -62,6 +62,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {

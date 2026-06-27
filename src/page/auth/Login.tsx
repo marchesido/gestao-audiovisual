@@ -25,7 +25,7 @@ export const Login: React.FC = () => {
     try {
       await login(email, password);
       navigate('/');
-    } catch (err) {
+    } catch {
       setError('Credenciais inválidas ou erro no servidor.');
     } finally {
       setIsLoading(false);

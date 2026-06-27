@@ -31,6 +31,7 @@ export const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, In
             style={{ ...inputStyle, resize: 'vertical', minHeight: '100px' }}
             onFocus={(e) => e.target.style.borderColor = 'var(--primary-color)'}
             onBlur={(e) => e.target.style.borderColor = error ? 'var(--danger-color)' : 'var(--border-color)'}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             {...(props as any)}
           />
         ) : (

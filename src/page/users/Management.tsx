@@ -4,8 +4,16 @@ import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Plus, Pencil, X } from 'lucide-react';
 
+interface UserItem {
+  id: string;
+  name: string;
+  email: string;
+  cpf?: string;
+  role: string;
+}
+
 export const UsersManagement: React.FC = () => {
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<UserItem[]>([]);
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -75,7 +83,7 @@ export const UsersManagement: React.FC = () => {
     setIsLoading(true);
     try {
       if (editingUserId) {
-        const payload: any = { name, email, cpf, role };
+        const payload: Record<string, string> = { name, email, cpf, role };
         if (password) payload.password = password;
         await updateUser(editingUserId, payload);
         alert('Usuário atualizado com sucesso!');
@@ -86,9 +94,10 @@ export const UsersManagement: React.FC = () => {
         resetForm();
       }
       loadUsers();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      alert(err.response?.data?.message || 'Erro ao salvar usuário.');
+      const apiError = err as { response?: { data?: { message?: string } } };
+      alert(apiError.response?.data?.message || 'Erro ao salvar usuário.');
     } finally {
       setIsLoading(false);
     }
@@ -104,7 +113,7 @@ export const UsersManagement: React.FC = () => {
     setRole('USER');
   };
 
-  const handleEditClick = (user: any) => {
+  const handleEditClick = (user: UserItem) => {
     setEditingUserId(user.id);
     setName(user.name);
     setEmail(user.email);

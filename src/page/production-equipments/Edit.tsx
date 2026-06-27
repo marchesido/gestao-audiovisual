@@ -14,6 +14,7 @@ export const EquipmentAllocationEdit: React.FC = () => {
   useEffect(() => {
     if (id) {
       getProductionEquipmentById(id).then(response => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const raw = response.data as any;
         setInitialData({
            ...raw,
