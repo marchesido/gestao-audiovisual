@@ -46,7 +46,7 @@ export const UsersManagement: React.FC = () => {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // E-mail validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -79,7 +79,7 @@ export const UsersManagement: React.FC = () => {
       alert('A senha deve ter no mínimo 8 dígitos, conter 1 letra maiúscula e 1 caractere especial.');
       return;
     }
-    
+
     setIsLoading(true);
     try {
       if (editingUserId) {
@@ -134,16 +134,16 @@ export const UsersManagement: React.FC = () => {
         <p style={{ color: 'var(--text-muted)', margin: 0 }}>Crie e visualize usuários do sistema.</p>
       </div>
 
-      <div style={{ 
-        display: 'flex', 
-        gap: '2rem', 
+      <div style={{
+        display: 'flex',
+        gap: '2rem',
         alignItems: 'flex-start',
         flexWrap: 'wrap'
       }}>
         {/* Formulário de Criação */}
         <form onSubmit={handleSave} style={{
-          display: 'flex', 
-          flexDirection: 'column', 
+          display: 'flex',
+          flexDirection: 'column',
           gap: '1.5rem',
           backgroundColor: 'var(--surface-color)',
           padding: '2rem',
@@ -163,14 +163,14 @@ export const UsersManagement: React.FC = () => {
             )}
           </div>
 
-          <Input 
+          <Input
             label="Nome"
             value={name}
             onChange={e => setName(e.target.value)}
             required
           />
 
-          <Input 
+          <Input
             label="E-mail"
             type="email"
             value={email}
@@ -178,7 +178,7 @@ export const UsersManagement: React.FC = () => {
             required
           />
 
-          <Input 
+          <Input
             label="CPF"
             value={cpf}
             onChange={(e) => {
@@ -193,7 +193,7 @@ export const UsersManagement: React.FC = () => {
             placeholder="000.000.000-00"
           />
 
-          <Input 
+          <Input
             label={editingUserId ? "Nova Senha (opcional)" : "Senha Inicial"}
             type="password"
             value={password}
@@ -203,7 +203,7 @@ export const UsersManagement: React.FC = () => {
             title="A senha deve ter no mínimo 8 dígitos, conter 1 letra maiúscula e 1 caractere especial."
           />
 
-          <Input 
+          <Input
             label="Confirmação de Senha"
             type="password"
             value={confirmPassword}
@@ -222,16 +222,16 @@ export const UsersManagement: React.FC = () => {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', width: '100%' }}>
             <label style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-muted)' }}>Perfil</label>
-            <select 
-              value={role} 
+            <select
+              value={role}
               onChange={e => setRole(e.target.value)}
               style={{
-                 padding: '0.75rem 1rem',
-                 borderRadius: 'var(--radius-md)',
-                 border: '1px solid var(--border-color)',
-                 backgroundColor: 'rgba(15, 23, 42, 0.5)',
-                 color: 'var(--text-main)',
-                 outline: 'none'
+                padding: '0.75rem 1rem',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-color)',
+                backgroundColor: 'rgba(15, 23, 42, 0.5)',
+                color: 'var(--text-main)',
+                outline: 'none'
               }}
             >
               <option value="USER">Usuário Padrão</option>
@@ -240,7 +240,7 @@ export const UsersManagement: React.FC = () => {
           </div>
 
           <Button type="submit" isLoading={isLoading} style={{ marginTop: '0.5rem' }}>
-            {editingUserId ? <Pencil size={20} /> : <Plus size={20} />} 
+            {editingUserId ? <Pencil size={20} /> : <Plus size={20} />}
             {editingUserId ? 'Salvar Alterações' : 'Criar Usuário'}
           </Button>
         </form>
@@ -254,7 +254,7 @@ export const UsersManagement: React.FC = () => {
           flex: '2 1 400px'
         }}>
           <h2 style={{ fontSize: '1.25rem', margin: '0 0 1.5rem 0' }}>Usuários Cadastrados</h2>
-          
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {users.length === 0 ? (
               <p style={{ color: 'var(--text-muted)' }}>Nenhum usuário encontrado.</p>
@@ -275,17 +275,17 @@ export const UsersManagement: React.FC = () => {
                     {u.cpf && <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.875rem' }}>CPF: {u.cpf}</p>}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <span style={{ 
-                      padding: '0.25rem 0.75rem', 
-                      borderRadius: '999px', 
-                      fontSize: '0.75rem', 
+                    <span style={{
+                      padding: '0.25rem 0.75rem',
+                      borderRadius: '999px',
+                      fontSize: '0.75rem',
                       fontWeight: 600,
                       backgroundColor: u.role === 'ADMIN' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(100, 116, 139, 0.2)',
                       color: u.role === 'ADMIN' ? '#60a5fa' : '#94a3b8'
                     }}>
                       {u.role}
                     </span>
-                    <button 
+                    <button
                       onClick={() => handleEditClick(u)}
                       style={{
                         background: 'none',
