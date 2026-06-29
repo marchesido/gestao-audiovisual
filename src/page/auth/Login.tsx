@@ -7,6 +7,8 @@ import { Input } from '../../components/ui/Input';
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -21,6 +23,21 @@ export const Login: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setEmailError('');
+    setPasswordError('');
+
+    let isValid = true;
+    if (!email) {
+      setEmailError('O email é obrigatório');
+      isValid = false;
+    }
+    if (!password) {
+      setPasswordError('A senha é obrigatória');
+      isValid = false;
+    }
+
+    if (!isValid) return;
+
     setIsLoading(true);
     try {
       await login(email, password);
@@ -67,13 +84,13 @@ export const Login: React.FC = () => {
           </div>
         )}
 
-        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+        <form onSubmit={handleLogin} noValidate style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <Input
             label="E-mail"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required
+            error={emailError}
             placeholder="admin@example.com"
           />
           <Input
@@ -81,7 +98,7 @@ export const Login: React.FC = () => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
+            error={passwordError}
             placeholder="••••••••"
           />
           <Button type="submit" isLoading={isLoading} style={{ width: '100%', marginTop: '0.5rem' }}>
