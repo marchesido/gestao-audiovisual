@@ -10,6 +10,9 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement | HTMLTextArea
 
 export const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
   ({ label, error, multiline, style, ...props }, ref) => {
+    const generatedId = React.useId();
+    const inputId = props.id || generatedId;
+
     const inputStyle: React.CSSProperties = {
       padding: '0.75rem 1rem',
       borderRadius: 'var(--radius-md)',
@@ -24,9 +27,10 @@ export const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, In
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', width: '100%' }}>
-        {label && <label style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-muted)' }}>{label}</label>}
+        {label && <label htmlFor={inputId} style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-muted)' }}>{label}</label>}
         {multiline ? (
           <textarea
+            id={inputId}
             ref={ref as React.Ref<HTMLTextAreaElement>}
             style={{ ...inputStyle, resize: 'vertical', minHeight: '100px' }}
             onFocus={(e) => e.target.style.borderColor = 'var(--primary-color)'}
@@ -36,6 +40,7 @@ export const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, In
           />
         ) : (
           <input
+            id={inputId}
             ref={ref as React.Ref<HTMLInputElement>}
             style={inputStyle}
             onFocus={(e) => e.target.style.borderColor = 'var(--primary-color)'}
