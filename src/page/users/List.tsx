@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { getUsers } from '../../services/userService';
+import { getUsers, deleteUser } from '../../services/userService';
 import { Button } from '../../components/ui/Button';
-import { Plus, Pencil, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Pencil, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router';
 
 interface UserItem {
@@ -30,6 +30,18 @@ export const UserList: React.FC = () => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadUsers();
   }, [loadUsers]);
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Deseja realmente excluir este usuário?')) {
+      try {
+        await deleteUser(id);
+        loadUsers();
+      } catch (err) {
+        console.error('Erro ao excluir usuário:', err);
+        alert('Erro ao excluir o usuário.');
+      }
+    }
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -89,6 +101,18 @@ export const UserList: React.FC = () => {
                     }}
                   >
                     <Pencil size={18} />
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(u.id)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--danger-color)',
+                      cursor: 'pointer',
+                      padding: '0.25rem'
+                    }}
+                  >
+                    <Trash2 size={18} />
                   </button>
                 </div>
               </div>
